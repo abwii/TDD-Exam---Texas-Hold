@@ -366,4 +366,66 @@ mod tests {
         assert_eq!(winners2.len(), 1);
         assert_eq!(winners2[0].0, "Charlie");
     }
+    #[test]
+    fn test_tie_breakers() {
+        let high1 = analyze_5_cards(&[
+            Card::from_str("As").unwrap(), Card::from_str("Ks").unwrap(),
+            Card::from_str("Qs").unwrap(), Card::from_str("Js").unwrap(),
+            Card::from_str("9d").unwrap(),
+        ]);
+        let high2 = analyze_5_cards(&[
+            Card::from_str("Ac").unwrap(), Card::from_str("Kc").unwrap(),
+            Card::from_str("Qc").unwrap(), Card::from_str("Jc").unwrap(),
+            Card::from_str("8h").unwrap(),
+        ]);
+        assert!(high1 > high2);
+
+        let pair_a = analyze_5_cards(&[
+            Card::from_str("As").unwrap(), Card::from_str("Ad").unwrap(),
+            Card::from_str("2s").unwrap(), Card::from_str("3s").unwrap(),
+            Card::from_str("4d").unwrap(),
+        ]);
+        let pair_k = analyze_5_cards(&[
+            Card::from_str("Ks").unwrap(), Card::from_str("Kd").unwrap(),
+            Card::from_str("2c").unwrap(), Card::from_str("3c").unwrap(),
+            Card::from_str("4h").unwrap(),
+        ]);
+        assert!(pair_a > pair_k);
+
+        let pair_a_kicker_k = analyze_5_cards(&[
+            Card::from_str("As").unwrap(), Card::from_str("Ad").unwrap(),
+            Card::from_str("Ks").unwrap(), Card::from_str("3s").unwrap(),
+            Card::from_str("4d").unwrap(),
+        ]);
+        let pair_a_kicker_q = analyze_5_cards(&[
+            Card::from_str("Ac").unwrap(), Card::from_str("Ah").unwrap(),
+            Card::from_str("Qs").unwrap(), Card::from_str("3c").unwrap(),
+            Card::from_str("4h").unwrap(),
+        ]);
+        assert!(pair_a_kicker_k > pair_a_kicker_q);
+        
+        let two_pair_a_k = analyze_5_cards(&[
+            Card::from_str("As").unwrap(), Card::from_str("Ad").unwrap(),
+            Card::from_str("Ks").unwrap(), Card::from_str("Kd").unwrap(),
+            Card::from_str("2s").unwrap(),
+        ]);
+        let two_pair_a_q = analyze_5_cards(&[
+            Card::from_str("Ac").unwrap(), Card::from_str("Ah").unwrap(),
+            Card::from_str("Qs").unwrap(), Card::from_str("Qd").unwrap(),
+            Card::from_str("2c").unwrap(),
+        ]);
+        assert!(two_pair_a_k > two_pair_a_q);
+
+        let trips_8 = analyze_5_cards(&[
+            Card::from_str("8s").unwrap(), Card::from_str("8d").unwrap(),
+            Card::from_str("8c").unwrap(), Card::from_str("As").unwrap(),
+            Card::from_str("Ks").unwrap(),
+        ]);
+        let trips_7 = analyze_5_cards(&[
+            Card::from_str("7s").unwrap(), Card::from_str("7d").unwrap(),
+            Card::from_str("7c").unwrap(), Card::from_str("As").unwrap(),
+            Card::from_str("Ks").unwrap(),
+        ]);
+        assert!(trips_8 > trips_7);
+    }
 }
